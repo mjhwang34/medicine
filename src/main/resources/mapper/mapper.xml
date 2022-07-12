@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.monorama.medicine.mapper.MainMapper">
+	<select id="getMedicineInfoByKeyString" parameterType="String" resultType="com.monorama.medicine.model.MedicineDocument">
+		SELECT ITEM_SEQ AS item_seq, ITEM_NAME AS item_name, ENTP_NAME AS entp_name, ITEM_PERMIT_DATE AS item_permit_date,
+		ETC_OTC_CODE AS etc_otc_code, CHART AS chart, BAR_CODE AS bar_code, MATERIAL_NAME AS material_name, EE_DOC_ID AS ee_doc_id,
+		UD_DOC_ID AS ud_doc_id, NB_DOC_ID AS nb_doc_id, STORAGE_METHOD AS storage_method, VALID_TERM as valid_term,
+		REEXAM_TARGET AS reexam_target, REEXAM_DATE AS reexam_date, PACK_UNIT AS pack_unit, EDI_CODE AS edi_code, 
+		PERMIT_KIND_NAME AS permit_kind_name, MAKE_MATERIAL_FLAG AS make_material_flag, NEWDRUG_CLASS_NAME AS newdrug_class_name,
+		CANCEL_DATE AS cancel_date, CANCEL_NAME AS cancel_name, CHANGE_DATE AS change_date, NARCOTIC_KIND_NAME AS narcotic_kind_name
+		FROM medicine WHERE ITEM_SEQ = #{keyString} OR BAR_CODE = #{keyString} OR EDI_CODE LIKE CONCAT('%', #{keyString}, '%')
+	</select>
+	
+	<!--
+	<select id="getMedicineSeqByCondition" parameterType="com.monorama.medicine.model.MedicineDocument" resultType="com.monorama.medicine.model.Medicine">
+		SELECT A.ITEM_SEQ, 
+		B.ITEM_NAME AS item_name, B.ENTP_NAME AS entp_name, B.ITEM_PERMIT_DATE AS item_permit_date,
+		B.ETC_OTC_CODE AS etc_otc_code, B.CHART AS chart, B.BAR_CODE AS bar_code, B.MATERIAL_NAME AS material_name, B.EE_DOC_ID AS ee_doc_id,
+		B.UD_DOC_ID AS ud_doc_id, B.NB_DOC_ID AS nb_doc_id, B.STORAGE_METHOD AS storage_method, B.VALID_TERM as valid_term,
+		B.REEXAM_TARGET AS reexam_target, B.REEXAM_DATE AS reexam_date, B.PACK_UNIT AS pack_unit, B.EDI_CODE AS edi_code, 
+		B.PERMIT_KIND_NAME AS permit_kind_name, B.MAKE_MATERIAL_FLAG AS make_material_flag, B.NEWDRUG_CLASS_NAME AS newdrug_class_name,
+		B.CANCEL_DATE AS cancel_date, B.CANCEL_NAME AS cancel_name, B.CHANGE_DATE AS change_date, B.NARCOTIC_KIND_NAME AS narcotic_kind_name
+		FROM
+		(SELECT ITEM_SEQ FROM chart WHERE
+		ITEM_SEQ LIKE '%'
+		<if test='item_seq_list!= null'> AND
+		<foreach collection="item_seq_list" item="item" open="(" separator="OR" close=")">ITEM_SEQ LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='edi_code_list!=null'> AND
+		<foreach collection="edi_code_list" item="item" open="(" separator="OR" close=")">EDI_CODE LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='item_name != null'> AND ITEM_NAME LIKE CONCAT('%', #{item_name}, '%') </if>
+		<if test='entp_name != null'> AND ENTP_NAME LIKE CONCAT('%', #{entp_name}, '%') </if>
+		<if test='shape != null'> AND DRUG_SHAPE = #{shape} </if>
+		<if test='line_list!= null'> AND
+		<foreach collection="line_list" item="item" open="(" separator="AND" close=")">(LINE_FRONT = #{item} OR LINE_BACK = #{item})</foreach>
+		</if>
+		<if test='color_list!= null'> AND
+		<foreach collection="color_list" item="item" open="(" separator="AND" close=")">(COLOR_CLASS1 = #{item} OR COLOR_CLASS2 = #{item})</foreach>
+		</if>
+		<if test='item_seq_list==null and item_name == null and entp_name == null and shape == null and line_list == null and color_list == null'> AND ITEM_SEQ='-1'</if>) AS A
+		LEFT JOIN medicine AS B ON A.ITEM_SEQ = B.ITEM_SEQ
+	</select> -->
+	
+	<select id="getMedicineSeqByCondition" parameterType="com.monorama.medicine.model.MedicineDocument" resultType="com.monorama.medicine.model.Medicine">
+		SELECT B.ITEM_SEQ AS item_seq, 
+		B.ITEM_NAME AS item_name, B.ENTP_NAME AS entp_name, B.ITEM_PERMIT_DATE AS item_permit_date,
+		B.ETC_OTC_CODE AS etc_otc_code, B.CHART AS chart, B.BAR_CODE AS bar_code, B.MATERIAL_NAME AS material_name, B.EE_DOC_ID AS ee_doc_id,
+		B.UD_DOC_ID AS ud_doc_id, B.NB_DOC_ID AS nb_doc_id, B.STORAGE_METHOD AS storage_method, B.VALID_TERM as valid_term,
+		B.REEXAM_TARGET AS reexam_target, B.REEXAM_DATE AS reexam_date, B.PACK_UNIT AS pack_unit, B.EDI_CODE AS edi_code, 
+		B.PERMIT_KIND_NAME AS permit_kind_name, B.MAKE_MATERIAL_FLAG AS make_material_flag, B.NEWDRUG_CLASS_NAME AS newdrug_class_name,
+		B.CANCEL_DATE AS cancel_date, B.CANCEL_NAME AS cancel_name, B.CHANGE_DATE AS change_date, B.NARCOTIC_KIND_NAME AS narcotic_kind_name
+		FROM
+		(SELECT ITEM_SEQ FROM chart WHERE
+		ITEM_SEQ LIKE '%'
+		<if test='item_seq_list!= null'> AND
+		<foreach collection="item_seq_list" item="item" open="(" separator="OR" close=")">ITEM_SEQ LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='item_name != null'> AND ITEM_NAME LIKE CONCAT('%', #{item_name}, '%') </if>
+		<if test='entp_name != null'> AND ENTP_NAME LIKE CONCAT('%', #{entp_name}, '%') </if>
+		<if test='shape != null'> AND DRUG_SHAPE = #{shape} </if>
+		<if test='line_list!= null'> AND
+		<foreach collection="line_list" item="item" open="(" separator="AND" close=")">(LINE_FRONT = #{item} OR LINE_BACK = #{item})</foreach>
+		</if>
+		<if test='color_list!= null'> AND
+		<foreach collection="color_list" item="item" open="(" separator="AND" close=")">(COLOR_CLASS1 = #{item} OR COLOR_CLASS2 = #{item})</foreach>
+		</if>
+		<if test='item_seq_list==null and item_name == null and entp_name == null and shape == null and line_list == null and color_list == null'> AND ITEM_SEQ='-1'</if>) AS A
+		LEFT JOIN
+		(SELECT * FROM medicine WHERE ITEM_SEQ LIKE '%'
+		<if test='edi_code_list!=null'> AND
+		<foreach collection="edi_code_list" item="item" open="(" separator="OR" close=")">EDI_CODE LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='edi_code_list==null'>AND ITEM_SEQ='-1'</if>
+		) AS B
+		ON A.ITEM_SEQ = B.ITEM_SEQ
+		UNION
+		SELECT D.ITEM_SEQ AS item_seq, 
+		D.ITEM_NAME AS item_name, D.ENTP_NAME AS entp_name, D.ITEM_PERMIT_DATE AS item_permit_date,
+		D.ETC_OTC_CODE AS etc_otc_code, D.CHART AS chart, D.BAR_CODE AS bar_code, D.MATERIAL_NAME AS material_name, D.EE_DOC_ID AS ee_doc_id,
+		D.UD_DOC_ID AS ud_doc_id, D.NB_DOC_ID AS nb_doc_id, D.STORAGE_METHOD AS storage_method, D.VALID_TERM as valid_term,
+		D.REEXAM_TARGET AS reexam_target, D.REEXAM_DATE AS reexam_date, D.PACK_UNIT AS pack_unit, D.EDI_CODE AS edi_code, 
+		D.PERMIT_KIND_NAME AS permit_kind_name, D.MAKE_MATERIAL_FLAG AS make_material_flag, D.NEWDRUG_CLASS_NAME AS newdrug_class_name,
+		D.CANCEL_DATE AS cancel_date, D.CANCEL_NAME AS cancel_name, D.CHANGE_DATE AS change_date, D.NARCOTIC_KIND_NAME AS narcotic_kind_name
+		FROM
+		(SELECT ITEM_SEQ FROM chart WHERE
+		ITEM_SEQ LIKE '%'
+		<if test='item_seq_list!= null'> AND
+		<foreach collection="item_seq_list" item="item" open="(" separator="OR" close=")">ITEM_SEQ LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='item_name != null'> AND ITEM_NAME LIKE CONCAT('%', #{item_name}, '%') </if>
+		<if test='entp_name != null'> AND ENTP_NAME LIKE CONCAT('%', #{entp_name}, '%') </if>
+		<if test='shape != null'> AND DRUG_SHAPE = #{shape} </if>
+		<if test='line_list!= null'> AND
+		<foreach collection="line_list" item="item" open="(" separator="AND" close=")">(LINE_FRONT = #{item} OR LINE_BACK = #{item})</foreach>
+		</if>
+		<if test='color_list!= null'> AND
+		<foreach collection="color_list" item="item" open="(" separator="AND" close=")">(COLOR_CLASS1 = #{item} OR COLOR_CLASS2 = #{item})</foreach>
+		</if>
+		<if test='item_seq_list==null and item_name == null and entp_name == null and shape == null and line_list == null and color_list == null'> AND ITEM_SEQ='-1'</if>) AS C
+		RIGHT JOIN
+		(SELECT * FROM medicine WHERE ITEM_SEQ LIKE '%'
+		<if test='edi_code_list!=null'> AND
+		<foreach collection="edi_code_list" item="item" open="(" separator="OR" close=")">EDI_CODE LIKE CONCAT('%', #{item}, '%')</foreach>
+		</if>
+		<if test='edi_code_list==null'>AND ITEM_SEQ='-1'</if>
+		) AS D
+		ON C.ITEM_SEQ = D.ITEM_SEQ
+	</select> 
+	
+	<select id="getPrescriptionList" resultType="com.monorama.medicine.model.Prescription">
+		SELECT PU AS pu, data AS data, create_time AS create_time FROM prescription
+	</select>
+	
+	<select id="getPrescriptionByPu" parameterType="String" resultType="com.monorama.medicine.model.Prescription">
+		SELECT PU AS pu, data AS data, create_time AS create_time FROM prescription WHERE PU=#{pu}
+	</select>
+	
+	<insert id="insertPrescription" parameterType="hashmap">
+		INSERT INTO prescription (PU, data) VALUES (#{pu}, #{data})
+	</insert>
+	
+	<delete id="deleteAllPrescription">
+		DELETE FROM prescription
+	</delete>
+</mapper>

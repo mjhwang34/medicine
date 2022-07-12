@@ -1,0 +1,43 @@
+body {
+  font-size: 1.0rem;
+}
+
+ .md-toolbar-tools{
+  color:white;
+ }
+
+ div.md-toolbar-tools{
+  background-color: green;
+  position:fixed
+ }
+
+ .md-toolbar-tools .material-symbols-outlined {
+  color:white;
+ }
+
+
+ div.plist > div {
+  text-align: center;
+  border: solid 1px green;
+  padding:10px;
+  margin:5px 10px;
+ }
+
+ div.pdetail .content {
+  text-align: center;
+  border: solid 1px green;
+  padding:10px;
+  margin:5px 10px;
+ }
+
+ div.subtitle{
+  border:hidden;
+  padding:10px;
+  margin:5px 10px;
+ }
+
+ button.md-raised.md-primary.md-button.md-ink-ripple{
+  background-color: green;
+ }
+
+ 

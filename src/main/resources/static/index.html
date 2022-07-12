@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> <!-- https mixed content 문제 -->
+    <title>개발중</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.js">    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-route/1.8.3/angular-route.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-resource/1.8.3/angular-resource.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.2.5/angular-material.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-animate/1.8.3/angular-animate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-aria/1.8.3/angular-aria.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.3.16/angular-messages.min.js"></script>
+
+	<!-- md-data-table -->
+    <script src="https://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.js"></script>
+    <!-- qrcode scan -->
+    <script src="https://blog.minhazav.dev/assets/research/html5qrcode/html5-qrcode.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-resource/1.8.3/angular-resource.js"></script>-->
+    <!-- sweet alert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sweetalert/1.1.2/SweetAlert.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sweetalert/1.1.2/SweetAlert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <!-- cookies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-cookies/1.8.3/angular-cookies.js"></script>
+    <!-- useragent -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-device-detector/5.1.4/ng-device-detector.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/re-tree/0.1.7/re-tree.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ua-device-detector/1.1.8/ua-device-detector.js"></script>
+
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.2.5/angular-material.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/md-data-table/2.2.0/md-data-table-style.css">
+    <link rel="stylesheet" href="https://rawgit.com/daniel-nagy/md-data-table/master/dist/md-data-table.css">
+    <!--<link rel="stylesheet" href="mycss.css">-->
+    <link rel="stylesheet" href="/css/mycss.css">
+</head>
+
+<body>
+    <div ng-controller="mainController" layout="column" layout-fill ng-cloak="" ng-app="app">
+        <md-toolbar layout="column" layout-align="center" ng-if="page!='index'">
+            <div class="md-toolbar-tools">
+                <md-button class="md-icon-button" aria-label="Settings" ng-if="page=='qr'|| page=='pdetail'" ng-click="back()">
+                    <span class="material-symbols-outlined">
+                        arrow_back
+                    </span>
+                </md-button>
+                <h2 flex md-truncate>{{title}}</h2>
+                <md-button class="md-icon-button" aria-label="Favorite" ng-if="page=='plist'" ng-click="qr()">
+                    <span class="material-symbols-outlined">
+                        qr_code_scanner
+                    </span>
+                </md-button>
+
+                <md-button class="md-icon-button" aria-label="More" ng-if="page=='plist'" ng-click="deleteAll()">
+                    <span class="material-symbols-outlined">
+                        delete
+                    </span>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-progress-linear md-mode="indeterminate" ng-if="is_loading"></md-progress-linear>
+        <div layout="column" layout-fill ng-if="page=='index'">
+            <md-content layout="column" layout-align="center" flex="">
+                <div layout="column" layout-align="center" style="padding:0px 100px">
+                    <md-input-container>
+                        <label>비밀번호</label>
+                        <input name="password" ng-model="user.password" type="text" required>
+                    </md-input-container>
+                    <md-button class="md-raised md-primary" ng-click="login(user)">로그인</md-button>
+                </div>
+            </md-content>
+        </div>
+        <div layout="column" layout-fill ng-if="page=='plist'">
+            <div class="plist">
+                <div ng-repeat="item in data_list" ng-click="selectPrescription(item)">
+                    {{item.create_time}}
+                </div>
+            </div>
+        </div>
+        <div layout="column" layout-fill ng-if="page=='pdetail'">
+            <div class="pdetail">
+                <div class="subtitle">버전</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.VS}}</div>
+                <div class="subtitle" >교부날짜</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.DA_year}}년 {{data_detail.DA_month}}월 {{data_detail.DA_month}}일</div>
+                <div class="subtitle" >교부번호</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.DA_num}}</div>
+                <!--
+                <div class="subtitle" >교부날짜, 교부번호</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.DA}}</div>  -->
+                <!---
+                <div class="subtitle" >요양기관번호, 의사번호</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.HD}}</div> -->
+                <div class="subtitle" >질병코드</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.CD}}</div>
+                <div class="subtitle" >처방의약품</div>
+                <div class="content">
+                	<div layout="column">
+                    	<div flex="" >의약품 코드</div>
+                    	<div flex="" >의약품 명칭</div>
+                	</div>
+                    <div layout="row">
+                    	<div flex="" >1회 투여랑</div>
+                    	<div flex="" >1일 투여횟수</div>
+                    	<div flex="" >총 투약일수</div>
+                	</div>
+                </div>
+                <div ng-repeat="item in ME_list" layout="column" layout-align="center" class="content">
+                    <div layout="column">
+                        <div flex="" >{{item.ME}}</div>
+                        <div flex="" >{{item.item_name}}</div>
+                    </div>
+                    <div layout="row">
+                        <div flex="" >{{item.amount}}</div>
+                        <div flex="" >{{item.num}}</div>
+                        <div flex="" >{{item.day}}</div>
+                    </div>
+                </div>
+                <div class="subtitle" >용법</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.US}}</div>
+                <div class="subtitle" >발행플랫폼 고유번호</div>
+                <div class="content" layout="row" layout-align="center center">{{data_detail.PU}}</div>
+            </div>
+        </div>
+ 
+        <div layout="column" layout-fill ng-if="page=='qr'" layout-align="center center">
+    	<md-radio-group ng-model="ctrl.userQr" ng-if="select_qr_show==true" layout="row">
+	        <md-radio-button ng-repeat="item in qr_list" ng-value="item.id" ng-click="select_qr(item)">
+	            {{ item.name }}
+	        </md-radio-button>
+    	</md-radio-group>
+         <md-select ng-model="ctrl.userCamera" ng-if="multiple_cameras==true" placeholder="Select Camera">
+            <md-option ng-repeat="item in camera_list_scope" ng-value="item"  ng-click="select_camera(item)">
+              {{item.label}}
+            </md-option>
+         </md-select>
+            <div style="width:100%; max-width: 640px;" id="reader"></div>
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript" src="/js/module.js"></script>
+<script type="text/javascript" src="/js/api.js"></script>
+<script type="text/javascript" src="/js/index.js"></script>
+
+</html>
